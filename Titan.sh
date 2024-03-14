@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 脚本保存路径
-SCRIPT_PATH="$HOME/titan.sh"
+SCRIPT_PATH="$HOME/Titan.sh"
 
 # 函数定义
 start_node() {
