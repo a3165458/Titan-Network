@@ -31,7 +31,7 @@ stop_node() {
 
 check_logs() {
     echo "查看日志..."
-    cat titan-edge.log
+    cat edge.log
 }
 
 # 主菜单
