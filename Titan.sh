@@ -13,7 +13,7 @@ start_node() {
         titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
         echo "启动节点并后台运行，请使用查看日志，或者Titan面板功能..."
-        nohup ./titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0  > edge.log 2>&1 &
+        nohup titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0  > edge.log 2>&1 &
     fi
 }
 
