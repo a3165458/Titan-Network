@@ -10,10 +10,10 @@ start_node() {
         # 下载并解压 titan-node 到 /usr/local/bin
         echo "正在下载并解压 titan-node..."
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
-        titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
+        nohup titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
         echo "启动节点..."
-        titan-edge daemon start
+        nohup titan-edge daemon start
     fi
 }
 
@@ -21,7 +21,7 @@ bind_node() {
     echo "绑定节点..."
     read -p "请输入身份码: " identity_code
     echo "绑定节点，身份码为: $identity_code ..."
-    titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
+    nohup titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
 }
 
 stop_node() {
