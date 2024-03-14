@@ -5,8 +5,6 @@ SCRIPT_PATH="$HOME/Titan.sh"
 
 # 函数定义
 start_node() {
-    sudo apt update 
-    sudo apt install screen -y
     
     if [ "$1" = "first-time" ]; then
         echo "首次启动节点..."
