@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # 脚本保存路径
 SCRIPT_PATH="$HOME/Titan.sh"
 
