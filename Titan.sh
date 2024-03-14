@@ -17,7 +17,7 @@ start_node() {
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
         titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
-        echo "启动节点监控并后台运行，请使用查看日志，或者Titan面板功能..."
+        echo "启动节点监控并后台运行，请使用查看日志(screen -r titan)，或者Titan面板功能..."
         screen -dmS titan bash -c 'titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0'
     fi
 }
