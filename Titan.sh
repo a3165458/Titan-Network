@@ -12,7 +12,7 @@ start_node() {
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
         titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
-        echo "启动节点..."
+        echo "启动节点并后台运行，请使用查看日志，或者Titan面板功能..."
         nohup titan-edge daemon start > titan-edge.log 2>&1 &
     fi
 }
