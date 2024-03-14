@@ -10,10 +10,10 @@ start_node() {
         # 下载并解压 titan-node 到 /usr/local/bin
         echo "正在下载并解压 titan-node..."
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
-        nohup titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
+        titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
         echo "启动节点..."
-        nohup titan-edge daemon start
+        nohup titan-edge daemon start > titan-edge.log 2>&1 &
     fi
 }
 
@@ -21,12 +21,17 @@ bind_node() {
     echo "绑定节点..."
     read -p "请输入身份码: " identity_code
     echo "绑定节点，身份码为: $identity_code ..."
-    nohup titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
+    titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
 }
 
 stop_node() {
     echo "停止节点..."
     titan-edge daemon stop
+}
+
+check_logs() {
+    echo "查看日志..."
+    cat titan-edge.log
 }
 
 # 主菜单
@@ -42,6 +47,7 @@ function main_menu() {
     echo "2) 启动节点"
     echo "3) 绑定节点"
     echo "4) 停止节点"
+    echo "5) 查看日志"
     read -p "输入选择 (1-5): " choice
 
     case $choice in
@@ -57,6 +63,9 @@ function main_menu() {
         4)
             stop_node
             ;;
+        5)
+            check_logs
+            ;;            
         *)
             echo "无效输入，请重新输入."
             ;;
