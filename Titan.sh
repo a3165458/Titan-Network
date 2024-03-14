@@ -11,6 +11,8 @@ start_node() {
     if [ "$1" = "first-time" ]; then
         echo "首次启动节点..."
         # 下载并解压 titan-node 到 /usr/local/bin
+        sudo apt update 
+        sudo apt install screen -y
         echo "正在下载并解压 titan-node..."
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
         titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
