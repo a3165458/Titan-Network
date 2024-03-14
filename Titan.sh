@@ -18,7 +18,7 @@ start_node() {
 }
 
 bind_node() {
-    echo "绑定节点..."
+    echo "绑定节点...进入网页:https://test1.titannet.io/newoverview/activationcodemanagement  注册账户，并点击节点管理，点击获取身份码，在下方输入即可"
     read -p "请输入身份码: " identity_code
     echo "绑定节点，身份码为: $identity_code ..."
     titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
