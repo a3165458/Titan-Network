@@ -1,10 +1,15 @@
 #!/bin/bash
 
+
+
 # 脚本保存路径
 SCRIPT_PATH="$HOME/Titan.sh"
 
 # 函数定义
 start_node() {
+    sudo apt update 
+    sudo apt install screen -y
+    
     if [ "$1" = "first-time" ]; then
         echo "首次启动节点..."
         # 下载并解压 titan-node 到 /usr/local/bin
@@ -12,8 +17,8 @@ start_node() {
         wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
         titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
     else
-        echo "启动节点并后台运行，请使用查看日志，或者Titan面板功能..."
-        nohup titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0  > edge.log 2>&1 &
+        echo "启动节点监控并后台运行，请使用查看日志，或者Titan面板功能..."
+        screen -dmS titan bash -c 'titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0'
     fi
 }
 
@@ -31,7 +36,7 @@ stop_node() {
 
 check_logs() {
     echo "查看日志..."
-    cat edge.log
+    screen -r titan
 }
 
 # 主菜单
