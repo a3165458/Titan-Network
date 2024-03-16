@@ -53,8 +53,6 @@ do
 
     # 进入容器并执行绑定和其他命令
     docker exec -it $container_id bash -c "\
-        apt update -y; \
-        apt install ca-certificates -y; \
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 done
 
