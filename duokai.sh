@@ -37,7 +37,7 @@ else
 fi
 
 # 拉取Docker镜像
-docker pull nezha123/titan-edge:1.0
+docker pull nezha123/titan-edge:1.1
 
 # 创建5个容器
 for i in {1..5}
