@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# 检查是否以root用户运行脚本
+if [ "$(id -u)" != "0" ]; then
+    echo "此脚本需要以root用户权限运行。"
+    echo "请尝试使用 'sudo -i' 命令切换到root用户，然后再次运行此脚本。"
+    exit 1
+fi
+
 echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
 echo "================================================================"
 echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
@@ -8,7 +15,7 @@ echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
 # 读取加载身份码信息
 read -p "输入你的身份码: " id
 
-# 新增：让用户输入想要创建的容器数量
+# 让用户输入想要创建的容器数量
 read -p "请输入你想要创建的容器数量: " container_count
 
 apt update
@@ -16,7 +23,6 @@ apt update
 # 检查 Docker 是否已安装
 if ! command -v docker &> /dev/null
 then
-    # 如果 Docker 未安装，则进行安装
     echo "未检测到 Docker，正在安装..."
     sudo apt-get install ca-certificates curl gnupg lsb-release
     
@@ -28,6 +34,7 @@ fi
 
 # 拉取Docker镜像
 docker pull nezha123/titan-edge:1.1
+
 
 # 创建用户指定数量的容器
 for i in $(seq 1 $container_count)
