@@ -16,7 +16,7 @@ echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
 read -p "输入你的身份码: " id
 
 # 让用户输入想要创建的容器数量
-read -p "请输入你想要创建的容器数量: " container_count
+read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: " container_count
 
 apt update
 
