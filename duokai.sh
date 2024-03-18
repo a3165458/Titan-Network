@@ -24,10 +24,10 @@ apt update
 if ! command -v docker &> /dev/null
 then
     echo "未检测到 Docker，正在安装..."
-    sudo apt-get install ca-certificates curl gnupg lsb-release
+    apt-get install ca-certificates curl gnupg lsb-release
     
     # 安装 Docker 最新版本
-    sudo apt-get install docker.io -y
+    apt-get install docker.io -y
 else
     echo "Docker 已安装。"
 fi
