@@ -8,6 +8,9 @@ echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
 # 读取加载身份码信息
 read -p "输入你的身份码: " id
 
+# 新增：让用户输入想要创建的容器数量
+read -p "请输入你想要创建的容器数量: " container_count
+
 apt update
 
 # 检查 Docker 是否已安装
@@ -26,8 +29,8 @@ fi
 # 拉取Docker镜像
 docker pull nezha123/titan-edge:1.1
 
-# 创建5个容器
-for i in {1..5}
+# 创建用户指定数量的容器
+for i in $(seq 1 $container_count)
 do
     # 为每个容器创建一个存储卷
     storage="titan_storage_$i"
@@ -44,6 +47,5 @@ do
     docker exec -it $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 done
-
 
 echo "==============================所有容器均已设置并启动===================================."
