@@ -46,13 +46,13 @@ do
     # 运行容器，并设置重启策略为always
     container_id=$(docker run -d --restart always -v "$PWD/$storage:/root/.titanedge/storage" --name "titan$i" nezha123/titan-edge:1.1)
 
-    echo "Container titan$i started with ID $container_id"
+    echo "节点 titan$i 已经启动 容器ID $container_id"
 
-    sleep 15
+    sleep 30
     
     # 进入容器并执行绑定和其他命令
     docker exec -it $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 done
 
-echo "==============================所有容器均已设置并启动===================================."
+echo "==============================所有节点均已设置并启动===================================."
