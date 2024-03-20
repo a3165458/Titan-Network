@@ -45,7 +45,6 @@ mkdir -p $volume_dir
 # 创建用户指定数量的容器
 for i in $(seq 1 $container_count)
 do
-    
     disk_size_mb=$((disk_size_gb * 1024))
     
     # 为每个容器创建一个具有特定大小的文件系统映像
@@ -57,6 +56,9 @@ do
     mount_point="/mnt/my_volume_$i"
     mkdir -p $mount_point
     sudo mount -o loop $volume_path $mount_point
+
+    # 将挂载信息添加到 /etc/fstab
+    echo "$volume_path $mount_point ext4 loop,defaults 0 0" | sudo tee -a /etc/fstab
 
     # 运行容器，并设置重启策略为always
     container_id=$(docker run -d --restart always -v $mount_point:/root/.titanedge/storage --name "titan$i" nezha123/titan-edge:1.1)
