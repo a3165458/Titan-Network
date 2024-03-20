@@ -18,6 +18,9 @@ read -p "输入你的身份码: " id
 # 让用户输入想要创建的容器数量
 read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: " container_count
 
+# 让用户输入每个容器的硬盘大小限制
+read -p "请输入每个节点的硬盘大小限制（例如：20G、30G）: " disk_size
+
 apt update
 
 # 检查 Docker 是否已安装
@@ -44,7 +47,7 @@ do
     mkdir -p "$storage"
 
     # 运行容器，并设置重启策略为always
-    container_id=$(docker run -d --restart always -v "$PWD/$storage:/root/.titanedge/storage" --name "titan$i" nezha123/titan-edge:1.1)
+    container_id=$(docker run -d --restart always --storage-opt size=$disk_size -v "$PWD/$storage:/root/.titanedge/storage" --name "titan$i" nezha123/titan-edge:1.1)
 
     echo "节点 titan$i 已经启动 容器ID $container_id"
 
