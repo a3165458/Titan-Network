@@ -21,6 +21,10 @@ read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: 
 # 让用户输入每个节点的硬盘大小限制（以GB为单位）
 read -p "请输入每个节点的硬盘大小限制（以GB为单位，例如：1代表1GB，2代表2GB）: " disk_size_gb
 
+# 询问用户数据卷存放目录，并设置默认值
+read -p "请输入数据卷存放目录 [默认: /mnt/docker_volumes]: " volume_dir
+volume_dir=${volume_dir:-/mnt/docker_volumes}
+
 apt update
 
 # 检查 Docker 是否已安装
@@ -39,7 +43,6 @@ fi
 docker pull nezha123/titan-edge:1.1
 
 # 创建映像文件存放目录
-volume_dir="/mnt/docker_volumes"
 mkdir -p $volume_dir
 
 # 创建用户指定数量的容器
