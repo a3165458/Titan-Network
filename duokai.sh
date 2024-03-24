@@ -19,7 +19,7 @@ read -p "输入你的身份码: " id
 read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: " container_count
 
 # 让用户输入想要分配的空间大小
-read -p "请输入你想要分配的存储空间大小（GB）: " storage_gb
+read -p "请输入你想要分配每个节点的存储空间大小（GB）: " storage_gb
 
 apt update
 
