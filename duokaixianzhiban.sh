@@ -40,7 +40,7 @@ else
 fi
 
 # 拉取Docker镜像
-docker pull nezha123/titan-edge:1.1
+docker pull nezha123/titan-edge
 
 # 创建映像文件存放目录
 mkdir -p $volume_dir
@@ -64,7 +64,7 @@ do
     echo "$volume_path $mount_point ext4 loop,defaults 0 0" | sudo tee -a /etc/fstab
 
     # 运行容器，并设置重启策略为always
-    container_id=$(docker run -d --restart always -v $mount_point:/root/.titanedge/storage --name "titan$i" nezha123/titan-edge:1.1)
+    container_id=$(docker run -d --restart always -v $mount_point:/root/.titanedge/storage --name "titan$i" nezha123/titan-edge)
 
     echo "节点 titan$i 已经启动 容器ID $container_id"
 
