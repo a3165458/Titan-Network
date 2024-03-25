@@ -60,15 +60,15 @@ do
     # 进入容器并执行绑定和其他命令
     docker exec -it $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
-done
+
 
 # 等待足够时间以确保所有容器都已启动并且config.toml文件已经生成
 echo "等待所有容器启动并生成配置文件..."
 sleep 10
 
-# 修改宿主机上的config.toml文件以设置StorageGB值
+# 修改config.toml文件以设置存储大小
     docker exec -it $container_id bash -c "\
-        sed -i '/StorageGB =/c\StorageGB = $storage_gb' /root/.titanedge/config.toml && \
+        sed -i '/StorageGB =/c\  StorageGB = $storage_gb' /root/.titanedge/config.toml && \
         echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
 done
 
