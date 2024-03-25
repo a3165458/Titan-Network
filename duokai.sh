@@ -19,7 +19,7 @@ read -p "输入你的身份码: " id
 read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: " container_count
 
 # 让用户输入想要分配的空间大小
-read -p "请输入你想要分配每个节点的存储空间大小（GB）: " storage_gb
+read -p "请输入你想要分配每个节点的存储空间大小（GB）,单个上限64G,网页生效较慢，等待20分钟后，网页查询即可: " storage_gb
 
 apt update
 
@@ -45,10 +45,6 @@ do
     # 为每个容器创建一个存储卷
     storage="titan_storage_$i"
     mkdir -p "$storage"
-    # 检查 ~/.titanedge 目录是否存在，如果不存在，则创建它
-    if [ ! -d "$HOME/.titanedge" ]; then
-        mkdir "$HOME/.titanedge"
-    fi
 
     # 运行容器，并设置重启策略为always
     container_id=$(docker run -d --restart always -v "$PWD/$storage:/root/.titanedge/storage" --name "titan$i" nezha123/titan-edge)
@@ -66,11 +62,11 @@ do
 echo "等待所有容器启动并生成配置文件..."
 sleep 10
 
-# 修改config.toml文件以设置存储大小
-    docker exec -it $container_id bash -c "\
-        sed -i '/StorageGB =/c\  StorageGB = $storage_gb' /root/.titanedge/config.toml && \
-        echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
-done
+# 修改宿主机上的config.toml文件以设置StorageGB值
+docker exec $container_id bash -c "\
+    sed -i 's/#StorageGB = .*/StorageGB = '$storage_gb'/' /root/.titanedge/config.toml && \
+    echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
 
+done
 
 echo "==============================所有节点均已设置并启动===================================."
