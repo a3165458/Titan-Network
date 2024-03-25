@@ -64,17 +64,13 @@ done
 
 # 等待足够时间以确保所有容器都已启动并且config.toml文件已经生成
 echo "等待所有容器启动并生成配置文件..."
-sleep 60
+sleep 10
 
 # 修改宿主机上的config.toml文件以设置StorageGB值
-config_path="$HOME/.titanedge/config.toml"
-if [ -f "$config_path" ]; then
-    sed -i '/StorageGB =/c\  StorageGB = '$storage_gb'' "$config_path"
-    echo "已将存储空间设置为 $storage_gb GB"
-else
-    echo "配置文件未找到，可能需要手动设置StorageGB。请检查容器是否正确启动并生成了配置文件。"
-fi
-
+    docker exec -it $container_id bash -c "\
+        sed -i '/StorageGB =/c\StorageGB = $storage_gb' /root/.titanedge/config.toml && \
+        echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
+done
 
 
 echo "==============================所有节点均已设置并启动===================================."
