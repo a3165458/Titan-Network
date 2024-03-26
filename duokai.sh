@@ -69,7 +69,7 @@ do
         echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
    
     # 进入容器并执行绑定和其他命令
-    docker exec -it $container_id bash -c "\
+    docker exec $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 
 
