@@ -64,9 +64,9 @@ do
     sleep 30
 
         # 修改宿主机上的config.toml文件以设置StorageGB值
-    docker exec $container_id bash -c "\
-        sed -i 's/#StorageGB = .*/StorageGB = '$storage_gb'/' /root/.titanedge/config.toml && \
-        echo '容器 titan$i 的存储空间已设置为 $storage_gb GB'"
+docker exec $container_id bash -c "\
+    sed -i 's/^[[:space:]]*#StorageGB = .*/StorageGB = $storage_gb/' /root/.titanedge/config.toml && \
+    echo '容器 titan'$i' 的存储空间已设置为 $storage_gb GB'"
    
     # 进入容器并执行绑定和其他命令
     docker exec $container_id bash -c "\
