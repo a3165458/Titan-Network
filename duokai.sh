@@ -11,6 +11,7 @@ echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开�
 echo "================================================================"
 echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
 echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
+echo "节点社区 Discord 社群:https://discord.gg/GbMV5EcNWF"
 
 # 读取加载身份码信息
 read -p "输入你的身份码: " id
