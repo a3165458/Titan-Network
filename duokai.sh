@@ -75,5 +75,6 @@ docker exec $container_id bash -c "\
 
 
 done
-
+# 重启所有docker镜像 让设置的磁盘容量生效
+docker restart $(docker ps -a -q)
 echo "==============================所有节点均已设置并启动===================================."
