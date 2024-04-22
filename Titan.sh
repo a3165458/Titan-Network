@@ -1,79 +1,78 @@
 #!/bin/bash
 
-# 脚本保存路径
-SCRIPT_PATH="$HOME/Titan.sh"
+# 检查是否以root用户运行脚本
+if [ "$(id -u)" != "0" ]; then
+    echo "此脚本需要以root用户权限运行。"
+    echo "请尝试使用 'sudo -i' 命令切换到root用户，然后再次运行此脚本。"
+    exit 1
+fi
 
-# 函数定义
-start_node() {
+echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
+echo "================================================================"
+echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
+echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
+echo "节点社区 Discord 社群:https://discord.gg/GbMV5EcNWF"
+
+# 读取加载身份码信息
+read -p "输入你的身份码: " id
+
+# 让用户输入想要创建的容器数量
+read -p "请输入你想要创建的节点数量，单IP限制最多5个节点，目前建议只开1个节点，效率最高: " container_count
+
+# 让用户输入想要分配的空间大小
+read -p "请输入你想要分配每个节点的存储空间大小（GB），单个上限2T, 设置后，需要执行Docker restart 容器名称，使其成效: " storage_gb
+
+# 让用户输入存储路径（可选）
+read -p "请输入节点存储数据的宿主机路径（直接回车将使用默认路径 titan_storage_$i,依次数字顺延）: " custom_storage_path
+
+apt update
+
+# 检查 Docker 是否已安装
+if ! command -v docker &> /dev/null
+then
+    echo "未检测到 Docker，正在安装..."
+    apt-get install ca-certificates curl gnupg lsb-release -y
     
-    if [ "$1" = "first-time" ]; then
-        echo "首次启动节点..."
-        # 下载并解压 titan-node 到 /usr/local/bin
-        sudo apt update 
-        sudo apt install screen -y
-        echo "正在下载并解压 titan-node..."
-        wget -c https://github.com/Titannet-dao/titan-node/releases/download/0.1.12/titan_v0.1.12_linux_amd64.tar.gz -O - | sudo tar -xz -C /usr/local/bin --strip-components=1
-        titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0
+    # 安装 Docker 最新版本
+    apt-get install docker.io -y
+else
+    echo "Docker 已安装。"
+fi
+
+# 拉取Docker镜像
+docker pull nezha123/titan-edge:1.4
+
+# 创建用户指定数量的容器
+for i in $(seq 1 $container_count)
+do
+    # 判断用户是否输入了自定义存储路径
+    if [ -z "$custom_storage_path" ]; then
+        # 用户未输入，使用默认路径
+        storage_path="$PWD/titan_storage_$i"
     else
-        echo "启动节点监控并后台运行，请使用查看日志(screen -r titan)，或者Titan面板功能..."
-        screen -dmS titan bash -c 'titan-edge daemon start --init --url https://test-locator.titannet.io:5000/rpc/v0'
+        # 用户输入了自定义路径，使用用户提供的路径
+        storage_path="$custom_storage_path"
     fi
-}
 
-bind_node() {
-    echo "绑定节点...进入网页:https://test1.titannet.io/newoverview/activationcodemanagement  注册账户，并点击节点管理，点击获取身份码，在下方输入即可"
-    read -p "请输入身份码: " identity_code
-    echo "绑定节点，身份码为: $identity_code ..."
-    titan-edge bind --hash=$identity_code https://api-test1.container1.titannet.io/api/v2/device/binding
-}
+    # 确保存储路径存在
+    mkdir -p "$storage_path"
 
-stop_node() {
-    echo "停止节点..."
-    titan-edge daemon stop
-}
+    # 运行容器，并设置重启策略为always
+    container_id=$(docker run -d --restart always -v "$storage_path:/root/.titanedge/storage" --name "titan$i" --net=host nezha123/titan-edge:1.4)
 
-check_logs() {
-    echo "查看日志..."
-    screen -r titan
-}
+    echo "节点 titan$i 已经启动 容器ID $container_id"
 
-# 主菜单
-function main_menu() {
-    clear
-    echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
-    echo "================================================================"
-    echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
-    echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
-    echo "首次安装节点后，等待生成文件（大约1-2分钟），敲击键盘ctrl c 停止节点，绑定身份码，再运行启动节点即可"
-    echo "请选择要执行的操作:"
-    echo "1) 安装节点"
-    echo "2) 启动节点"
-    echo "3) 绑定节点"
-    echo "4) 停止节点"
-    echo "5) 查看日志"
-    read -p "输入选择 (1-5): " choice
+    sleep 30
 
-    case $choice in
-        1)
-            start_node first-time
-            ;;
-        2)
-            start_node
-            ;;
-        3)
-            bind_node
-            ;;
-        4)
-            stop_node
-            ;;
-        5)
-            check_logs
-            ;;            
-        *)
-            echo "无效输入，请重新输入."
-            ;;
-    esac
-}
+        # 修改宿主机上的config.toml文件以设置StorageGB值
+docker exec $container_id bash -c "\
+    sed -i 's/^[[:space:]]*#StorageGB = .*/StorageGB = $storage_gb/' /root/.titanedge/config.toml && \
+    echo '容器 titan'$i' 的存储空间已设置为 $storage_gb GB'"
+   
+    # 进入容器并执行绑定和其他命令
+    docker exec $container_id bash -c "\
+        titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 
-# 显示主菜单
-main_menu
+done
+
+echo "==============================所有节点均已设置并启动===================================."
