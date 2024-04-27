@@ -20,7 +20,7 @@ read -p "输入你的身份码: " id
 read -p "请输入你想要创建的节点数量，单IP限制最多5个节点: " container_count
 
 # 让用户输入起始 RPC 端口号
-read -p "请输入你想要设置的起始 RPC 端口号: " start_rpc_port
+read -p "请输入你想要设置的起始 RPC （端口号请自行设定，开启5个节点端口将会依次数字顺延）: " start_rpc_port
 
 # 让用户输入想要分配的空间大小
 read -p "请输入你想要分配每个节点的存储空间大小（GB），单个上限64G, 网页生效较慢，等待20分钟后，网页查询即可: " storage_gb
@@ -74,19 +74,15 @@ do
         sed -i 's/^[[:space:]]*#StorageGB = .*/StorageGB = $storage_gb/' /root/.titanedge/config.toml && \
         sed -i 's/^[[:space:]]*#ListenAddress = \"0.0.0.0:1234\"/ListenAddress = \"0.0.0.0:$current_rpc_port\"/' /root/.titanedge/config.toml && \
         echo '容器 titan'$i' 的存储空间设置为 $storage_gb GB，RPC 端口设置为 $current_rpc_port'"
-done
 
-# 重启所有docker容器 让设置的磁盘容量生效
-docker restart $(docker ps -a -q)
+    # 重启容器以让设置生效
+    docker restart $container_id
 
-# 执行绑定命令
-for ((i=1; i<=container_count; i++))
-do
-    container_id=$(docker ps -aqf "name=titan$i")
     # 进入容器并执行绑定命令
     docker exec $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
     echo "节点 titan$i 已绑定."
+
 done
 
 echo "==============================所有节点均已设置并启动==================================="
