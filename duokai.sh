@@ -58,7 +58,7 @@ do
     mkdir -p "$storage_path"
 
     # 运行容器，并设置重启策略为always
-    container_id=$(docker run -d --restart always -v "$storage_path:/root/.titanedge/storage" --name "titan$i" nezha123/titan-edge:1.4)
+    container_id=$(docker run -d --restart always -v "$storage_path:/root/.titanedge/storage" --name "titan$i" --net=host  nezha123/titan-edge:1.4)
 
     echo "节点 titan$i 已经启动 容器ID $container_id"
 
