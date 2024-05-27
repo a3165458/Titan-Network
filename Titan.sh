@@ -7,11 +7,7 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
-echo "================================================================"
-echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
-echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
-echo "节点社区 Discord 社群:https://discord.gg/GbMV5EcNWF"
+function install_node() {
 
 # 读取加载身份码信息
 read -p "输入你的身份码: " id
@@ -73,6 +69,60 @@ docker exec $container_id bash -c "\
     docker exec $container_id bash -c "\
         titan-edge bind --hash=$id https://api-test1.container1.titannet.io/api/v2/device/binding"
 
-done
-
 echo "==============================所有节点均已设置并启动===================================."
+
+}
+
+# 卸载节点功能
+function uninstall_node() {
+    echo "你确定要卸载Titan 节点程序吗？这将会删除所有相关的数据。[Y/N]"
+    read -r -p "请确认: " response
+
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            echo "开始卸载节点程序..."
+            for i in {1..5}; do
+                sudo docker stop "titan$i" && sudo docker rm "titan$i"
+            done
+            for i in {1..5}; do 
+                rmName="storage_titan_$i"
+                rm -rf "$rmName"
+            done
+            echo "节点程序卸载完成。"
+            ;;
+        *)
+            echo "取消卸载操作。"
+            ;;
+    esac
+}
+
+
+
+# 主菜单
+function main_menu() {
+    while true; do
+        clear
+        echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
+        echo "================================================================"
+        echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
+        echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
+        echo "节点社区 Discord 社群:https://discord.gg/GbMV5EcNWF"
+        echo "退出脚本，请按键盘ctrl c退出即可"
+        echo "请选择要执行的操作:"
+        echo "1. 安装节点"
+        echo "2. 卸载节点"
+        read -p "请输入选项（1-2）: " OPTION
+
+        case $OPTION in
+        1) install_node ;;
+        2) uninstall_node ;;
+        *) echo "无效选项。" ;;
+        esac
+        echo "按任意键返回主菜单..."
+        read -n 1
+    done
+    
+}
+
+# 显示主菜单
+main_menu
