@@ -39,7 +39,7 @@ else
 fi
 
 # 拉取Docker镜像
-docker pull nezha123/titan-edge:1.7_amd64
+docker pull nezha123/titan-edge:1.7
 
 # 创建用户指定数量的容器
 for ((i=1; i<=container_count; i++))
@@ -59,7 +59,7 @@ do
     mkdir -p "$storage_path"
 
     # 运行容器，并设置重启策略为always
-    container_id=$(docker run -d --restart always -v "$storage_path:/root/.titanedge/storage" --name "titan$i" --net=host  nezha123/titan-edge:1.7_amd64)
+    container_id=$(docker run -d --restart always -v "$storage_path:/root/.titanedge/storage" --name "titan$i" --net=host  nezha123/titan-edge:1.7)
 
     echo "节点 titan$i 已经启动 容器ID $container_id"
 
